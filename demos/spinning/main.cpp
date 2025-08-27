@@ -49,6 +49,9 @@
 PQP_Model bunny, torus;
 Model *bunny_to_draw, *torus_to_draw;
 
+
+double speed = 1.0; // default
+
 int mode;
 double beginx, beginy;
 double dis = 10.0, azim = 0.0, elev = 0.0;
@@ -104,17 +107,35 @@ InitViewerWindow()
   glMatrixMode(GL_MODELVIEW);
 }
 
-void 
-KeyboardCB(unsigned char key, int x, int y) 
+
+void KeyboardCB(unsigned char key, int x, int y) 
 {
   switch(key) 
   {
-  case 'q': delete bunny_to_draw; delete torus_to_draw; exit(0); 
-  default: animate = 1 - animate;
+    case 'q':
+      delete bunny_to_draw;
+      delete torus_to_draw;
+      exit(0);
+      break;
+
+    case '+':
+      speed *= 1.1;  // faster
+      break;
+
+    case '-':
+      speed *= 0.9;  // slower
+      break;
+
+    default:
+      animate = 1 - animate; // toggle
+      break;
   }
 
   glutPostRedisplay();
 }
+
+
+
 
 void
 MouseCB(int _b, int _s, int _x, int _y)
@@ -187,6 +208,11 @@ IdleCB()
   glutPostRedisplay();
 }
 
+
+
+
+
+
 void
 DisplayCB()
 {
@@ -196,9 +222,13 @@ DisplayCB()
 
   if (animate) 
   {
-    rot1 += .1;
-    rot2 += .2;
-    rot3 += .3;
+    //rot1 += .1;
+    //rot2 += .2;
+    //rot3 += .3;
+    rot1 += 0.1 * speed;
+    rot2 += 0.2 * speed;
+    rot3 += 0.3 * speed;
+
   }
 
   PQP_REAL R1[3][3],R2[3][3],T1[3],T2[3];
@@ -284,6 +314,9 @@ DisplayCB()
 
   EndDraw();
 }
+
+
+
 
 int main(int argc, char **argv)
 {
